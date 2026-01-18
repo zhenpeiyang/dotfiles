@@ -120,18 +120,6 @@ if command -v python >/dev/null 2>&1; then
   eval "$(python -m rcall.shell 2>/dev/null || true)"
 fi
 
-if command -v am >/dev/null 2>&1; then
-  eval "$(am shell)"
-fi
-
-if command -v bbb >/dev/null 2>&1; then
-  eval "$(bbb complete init zsh 2>/dev/null || true)"
-fi
-
-if command -v brix >/dev/null 2>&1; then
-  source <(brix completion zsh)
-fi
-
 # ---------------------------
 # Line search keybindings
 # ---------------------------
