@@ -13,8 +13,6 @@ fi
 export LANG=en_US.UTF-8
 
 # autoswitch-virtualenv defaults
-export AUTOSWITCH_VIRTUAL_ENV_DIR="$HOME/.virtualenvs"  # default already, explicit for clarity
-plugins=(autoswitch_virtualenv ${plugins})
 # ---------------------------
 # Oh My Zsh setup
 # ---------------------------
@@ -22,7 +20,6 @@ export ZSH="$HOME/.oh-my-zsh"
 ZSH_THEME="robbyrussell"
 
 # Plugins
-plugins=(git autoswitch_virtualenv)
 
 # Load Oh My Zsh
 source $ZSH/oh-my-zsh.sh
@@ -111,9 +108,6 @@ bindkey "^[[B" down-line-or-beginning-search
 # ---------------------------
 
 # ---------------------------
-# Environment include
-# ---------------------------
-. "$HOME/.local/bin/env"
 
 # lane = first directory under ~/code
 function lane_name() {

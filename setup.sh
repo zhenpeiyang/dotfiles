@@ -51,6 +51,8 @@ log "Linking dotfiles from $REPO_DIR"
 link_dotfile "$REPO_DIR/.vim" "$HOME/.vim"
 link_dotfile "$REPO_DIR/.vimrc" "$HOME/.vimrc"
 link_dotfile "$REPO_DIR/.tmux.conf" "$HOME/.tmux.conf"
+echo $REPO_DIR/.tmux.conf
+echo $HOME/.tmux.conf
 link_dotfile "$REPO_DIR/.tmux.dev" "$HOME/.tmux.dev"
 link_dotfile "$REPO_DIR/.zshrc" "$HOME/.zshrc"
 
