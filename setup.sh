@@ -48,24 +48,47 @@ link_dotfile() {
 }
 
 log "Linking dotfiles from $REPO_DIR"
-link_dotfile "$REPO_DIR/.vim" "$HOME/.vim"
+if [ -L "$HOME/.vim" ]; then
+  if [ "$(readlink "$HOME/.vim")" = "$REPO_DIR/.vim" ]; then
+    run rm "$HOME/.vim"
+  else
+    backup_if_exists "$HOME/.vim" "$REPO_DIR/.vim"
+  fi
+elif [ -e "$HOME/.vim" ] && [ ! -d "$HOME/.vim" ]; then
+  backup_if_exists "$HOME/.vim" "$REPO_DIR/.vim"
+fi
+run mkdir -p "$HOME/.vim"
+link_dotfile "$REPO_DIR/.vim/colors" "$HOME/.vim/colors"
 link_dotfile "$REPO_DIR/.vimrc" "$HOME/.vimrc"
 link_dotfile "$REPO_DIR/.tmux.conf" "$HOME/.tmux.conf"
+echo $REPO_DIR/.tmux.conf
+echo $HOME/.tmux.conf
 link_dotfile "$REPO_DIR/.tmux.dev" "$HOME/.tmux.dev"
 link_dotfile "$REPO_DIR/.zshrc" "$HOME/.zshrc"
 
 log "Installing vim-plug (if missing)"
 if [ ! -f "$HOME/.vim/autoload/plug.vim" ]; then
+  run mkdir -p "$HOME/.vim/autoload"
   if has_cmd curl; then
     run curl -fLo "$HOME/.vim/autoload/plug.vim" --create-dirs \
       https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim
   elif has_cmd wget; then
-    run mkdir -p "$HOME/.vim/autoload"
     run wget -O "$HOME/.vim/autoload/plug.vim" \
       https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim
   else
     log "  curl/wget not found; skip vim-plug install"
   fi
+fi
+
+log "Installing vim plugins (vim-plug)"
+if has_cmd vim; then
+  if [ "$DRY_RUN" -eq 1 ]; then
+    log "  [dry-run] vim -E -s +PlugInstall +qall"
+  else
+    run vim -E -s +PlugInstall +qall
+  fi
+else
+  log "  vim not found; skip PlugInstall"
 fi
 
 log "Installing oh-my-zsh (if missing)"

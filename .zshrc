@@ -139,6 +139,3 @@ if [ -f "$HOME/.config/zsh/secrets.zsh" ]; then
 fi
 
 # ---------------------------
-# Environment include
-# ---------------------------
-[ -f "$HOME/.local/bin/env" ] && . "$HOME/.local/bin/env"
