@@ -2,6 +2,7 @@
 # ~/.zshrc (fixed + faster)
 # ===========================
 
+export VIRTUAL_ENV_DISABLE_PROMPT=1
 # ---------------------------
 # Paths & environment early
 # ---------------------------
@@ -50,6 +51,7 @@ autoload -U compinit; compinit -i -C
 # ---------------------------
 alias ls='ls -G'
 alias gcf='git add . && git commit -m "fix"'
+alias gfm='git fetch origin --prune && git merge origin/master'
 alias gmd='git add . && git commit --amend'
 alias top='gotop -c solarized'
 alias mypy='mypy --strict --no-warn-return-any --allow-untyped-calls'
@@ -137,5 +139,35 @@ bindkey "^[[B" down-line-or-beginning-search
 if [ -f "$HOME/.config/zsh/secrets.zsh" ]; then
   source "$HOME/.config/zsh/secrets.zsh"
 fi
+
+# ---------------------------
+# Environment include
+# ---------------------------
+[ -f "$HOME/.local/bin/env" ] && . "$HOME/.local/bin/env"
+
+# ---------------------------
+# Convenience helpers
+# ---------------------------
+unalias tmux 2>/dev/null
+tmux() {
+  if [ $# -eq 0 ]; then
+    command tmux attach || command tmux new
+  else
+    command tmux "$@"
+  fi
+}
+codex_clear_tmux_alert() {
+  [[ -z "$TMUX_PANE" ]] && return
+  local socket="${TMUX%%,*}"
+  command -v tmux >/dev/null || return
+  local alert
+  alert=$(tmux -S "$socket" show -p -t "$TMUX_PANE" -v @codex_alert 2>/dev/null) || return
+  [[ "$alert" != "1" ]] && return
+  tmux -S "$socket" set -p -t "$TMUX_PANE" @codex_alert 0 2>/dev/null
+  tmux -S "$socket" select-pane -t "$TMUX_PANE" -P default 2>/dev/null
+}
+
+autoload -Uz add-zsh-hook
+add-zsh-hook precmd codex_clear_tmux_alert
 
 # ---------------------------
